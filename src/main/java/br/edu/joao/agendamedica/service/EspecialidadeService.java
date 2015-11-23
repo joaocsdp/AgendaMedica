@@ -2,6 +2,7 @@ package br.edu.joao.agendamedica.service;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 import br.edu.joao.agendamedica.bean.EspecialidadeBean;
 
@@ -12,7 +13,7 @@ public class EspecialidadeService {
 	
 	@GET
 	@Path("/listarEspecialidade")
-	//@Produces("application/json")
+	@Produces("application/json")
 	public String listarTodas() {
 		Gson gson = new Gson();
 		return gson.toJson(new EspecialidadeBean().listarTodas());
