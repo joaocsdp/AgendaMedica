@@ -19,4 +19,7 @@ public class ListarAgendaMedicaBean {
 		return ListarAgendaMedicaDAO.getInstance().buscarPorMedico(id);
 	}
 	
+	public List<AgendaMedica> buscarPorData(String data){
+		return ListarAgendaMedicaDAO.getInstance().buscarPorData(data);
+	}
 }

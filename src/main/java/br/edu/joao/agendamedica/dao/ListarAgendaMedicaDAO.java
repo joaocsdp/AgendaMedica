@@ -3,6 +3,8 @@ package br.edu.joao.agendamedica.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,5 +150,51 @@ public class ListarAgendaMedicaDAO extends ConexaoFactory {
 		return listaAgendaMedica;
 		
 	}
+	
+	public List<AgendaMedica> buscarPorData(String data){
+		try {
+			String dia = data.substring(0, 2);
+			String mes = data.substring(2, 4);
+			String ano = data.substring(4, 8);
+			DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			java.sql.Date dataFormatada = new java.sql.Date(format.parse(dia + "/" + mes +"/" + ano).getTime());
+			
+			listaAgendaMedica = new ArrayList<AgendaMedica>();
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT * FROM TB_AGENDA_MEDICA WHERE DATA_AGENDA = ? ");
+			
+			Connection conn = criaConexao();
+			PreparedStatement ps = conn.prepareStatement(sql.toString());
+			
+			ps.setDate(1, dataFormatada);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()){
+				AgendaMedica agendaMedica = new AgendaMedica();
+				agendaMedica.setId(rs.getLong("id_agenda_medica"));
+				agendaMedica.setDataAgenda(rs.getDate("data_agenda"));
+				agendaMedica.setLocalAtendimento(new LocalAtendimentoBean().buscarPorId(rs.getInt("id_local_atendimento")));
+				agendaMedica.setMedico(new MedicoBean().buscarPorId(rs.getInt("id_medico")));				
+				
+				if(rs.getString("situacao").equals("M")){
+					agendaMedica.setSituacao(Situacao.Marcada);
+				}else if(rs.getString("situacao").equals("C")){
+					agendaMedica.setSituacao(Situacao.Cancelada);
+				}else{
+					agendaMedica.setSituacao(Situacao.Disponivel);
+				}
+				listaAgendaMedica.add(agendaMedica);
+			}
+			conn.close();
+			ps.close();
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return listaAgendaMedica;
+		
+	}
+	
 	
 }

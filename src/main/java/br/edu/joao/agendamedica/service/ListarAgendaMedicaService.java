@@ -36,4 +36,12 @@ public class ListarAgendaMedicaService {
 		return gson.toJson(new ListarAgendaMedicaBean().buscarPorMedico(id));
 	}
 	
+	@GET
+	@Path("/listarPorData/{ data }")
+	@Produces("application/json")
+	public String buscarPorMedico(@PathParam("data") String data ){
+		Gson gson = new Gson();
+		return gson.toJson(new ListarAgendaMedicaBean().buscarPorData(data));
+	}
+	
 }
