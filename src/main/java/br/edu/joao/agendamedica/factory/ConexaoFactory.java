@@ -21,26 +21,8 @@ public class ConexaoFactory {
 		} catch (Exception e) {
 			System.out.println("Erro na conexão com o banco de dados" + e);
 			e.printStackTrace();
-		} finally{
+		} 
 			return conn;
-		}
-	}
-	
-	public void fechaConexao(Connection conn, PreparedStatement pstmt, ResultSet rs) {
-		try {
-			if(conn != null) {
-				conn.close();
-			}
-			if(pstmt != null){
-				pstmt.close();
-			}
-			if(rs != null) {
-				rs.close();
-			}
-		} catch (Exception e) {
-			System.out.println("Erro no encerramento da conexão " + e);
-			e.printStackTrace();
-		}
 	}
 	
 }
