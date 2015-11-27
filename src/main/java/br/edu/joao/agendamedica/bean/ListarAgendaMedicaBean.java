@@ -22,4 +22,8 @@ public class ListarAgendaMedicaBean {
 	public List<AgendaMedica> buscarPorData(String data){
 		return ListarAgendaMedicaDAO.getInstance().buscarPorData(data);
 	}
+	
+	public List<AgendaMedica> buscarPorEspecialidade(Integer id){
+		return ListarAgendaMedicaDAO.getInstance().buscarPorEspecialidade(id);
+	}
 }
