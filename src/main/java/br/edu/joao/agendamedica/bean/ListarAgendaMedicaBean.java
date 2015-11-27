@@ -15,4 +15,8 @@ public class ListarAgendaMedicaBean {
 		return ListarAgendaMedicaDAO.getInstance().buscarPorLocalAtendimento(id);
 	}
 
+	public List<AgendaMedica> buscarPorMedico(Integer id){
+		return ListarAgendaMedicaDAO.getInstance().buscarPorMedico(id);
+	}
+	
 }

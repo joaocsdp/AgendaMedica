@@ -28,4 +28,12 @@ public class ListarAgendaMedicaService {
 		return gson.toJson(new ListarAgendaMedicaBean().buscarPorLocalAtendimento(id));
 	}
 	
+	@GET
+	@Path("/listarPorMedico/{ id }")
+	@Produces("application/json")
+	public String buscarPorMedico(@PathParam("id") Integer id ){
+		Gson gson = new Gson();
+		return gson.toJson(new ListarAgendaMedicaBean().buscarPorMedico(id));
+	}
+	
 }
