@@ -11,12 +11,11 @@ import br.edu.joao.agendamedica.factory.ConexaoFactory;
 public class EspecialidadeDAO extends ConexaoFactory {
 
 	ArrayList<Especialidade> lista = new ArrayList<Especialidade>();
-	PreparedStatement ps = null;
-	ResultSet rs = null;
+	
 
 	public static EspecialidadeDAO instance; 
 
-	Connection conn = criaConexao();
+	
 
 	public static EspecialidadeDAO getInstance() {
 		if(instance == null){
@@ -27,21 +26,44 @@ public class EspecialidadeDAO extends ConexaoFactory {
 	
 	public ArrayList<Especialidade> listarTodas() {
 		try {
-			ps = conn.prepareStatement("select * from tb_especialidade");
-			rs = ps.executeQuery();
-
+			Connection conn = criaConexao();
+			PreparedStatement ps = conn.prepareStatement("select * from tb_especialidade");
+			ResultSet rs = ps.executeQuery();
+			
 			while(rs.next()){
 				Especialidade especialidade = new Especialidade();
 				especialidade.setId(rs.getLong("id_especialidade"));
 				especialidade.setNome(rs.getString("nome"));
 				lista.add(especialidade);
 			}
+			conn.close();
+			ps.close();
+			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
-			fechaConexao(conn, ps, rs);
 		}
 		return lista;
+	}
+	
+	public Especialidade buscarPorId(Integer id) {
+		Especialidade especialidade = new Especialidade();
+		try {
+			Connection conn = criaConexao();
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM TB_ESPECIALIDADE WHERE ID_ESPECIALIDADE = ?");
+			ps.setLong(1, id);
+			
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.first()){
+				
+				especialidade.setId(rs.getLong("id_especialidade"));
+				especialidade.setNome(rs.getString("nome"));
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return especialidade;
 	}
 
 	

@@ -11,4 +11,8 @@ public class LocalAtendimentoBean {
 		return LocalAtendimentoDAO.getInstance().listarTodos();
 	}
 	
+	public LocalAtendimento buscarPorId(Integer id){
+		return LocalAtendimentoDAO.getInstance().buscarPorId(id);
+	}
+	
 }

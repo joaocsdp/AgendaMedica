@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.joao.agendamedica.bean.EspecialidadeBean;
 import br.edu.joao.agendamedica.domain.Especialidade;
 import br.edu.joao.agendamedica.domain.Medico;
 import br.edu.joao.agendamedica.factory.ConexaoFactory;
@@ -14,12 +15,10 @@ import br.edu.joao.agendamedica.factory.ConexaoFactory;
 public class MedicoDAO extends ConexaoFactory {
 
 	private List<Medico> medicos = new ArrayList<Medico>();
-	PreparedStatement ps = null;
-	ResultSet rs = null;
-
+	
 	public static MedicoDAO instance;
 
-	Connection conn = criaConexao();
+	
 
 	public static MedicoDAO getInstance() {
 		if (instance == null) {
@@ -38,13 +37,15 @@ public class MedicoDAO extends ConexaoFactory {
 
 	public List<Medico> listarTodos() {
 		try {
+				
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT M.ID_MEDICO, M.NOME, M.CRM, E.ID_ESPECIALIDADE, E.NOME FROM TB_MEDICO M ");
 			sql.append(" INNER JOIN TB_ESPECIALIDADE E ");
 			sql.append(" ON M.ID_ESPECIALIDADE = E.ID_ESPECIALIDADE ");
-
-			ps = conn.prepareStatement(sql.toString());
-			rs = ps.executeQuery();
+			
+			Connection conn = criaConexao();
+			PreparedStatement ps = conn.prepareStatement(sql.toString());
+			ResultSet rs = ps.executeQuery();		
 			
 			while(rs.next()){
 				Especialidade especialidade = new Especialidade();
@@ -62,13 +63,51 @@ public class MedicoDAO extends ConexaoFactory {
 				
 				
 			}
+			conn.close();
+			ps.close();
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally{
-			fechaConexao(conn, ps, rs);
 		}
 
 		return medicos;
+	}
+	
+	public Medico buscarPorId(Integer id){
+		Medico medico = new Medico();
+		
+		try {
+			
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT * FROM TB_MEDICO WHERE ID_MEDICO = ?");
+
+			
+			Connection conn = criaConexao();
+			PreparedStatement ps = conn.prepareStatement(sql.toString());
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.first()){
+				
+				medico.setId(rs.getInt("id_medico"));
+				medico.setNome(rs.getString("nome"));
+				medico.setCrm(rs.getInt("crm"));
+				
+				medico.setEspecialidade(new EspecialidadeBean().buscarPorId(rs.getInt("id_especialidade")));
+				
+				medicos.add(medico);
+				
+				
+			}
+			
+			conn.close();
+			ps.close();
+			rs.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return medico;
 	}
 
 }

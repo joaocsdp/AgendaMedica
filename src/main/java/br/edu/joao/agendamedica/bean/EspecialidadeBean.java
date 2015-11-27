@@ -11,4 +11,7 @@ public class EspecialidadeBean {
 		return EspecialidadeDAO.getInstance().listarTodas();
 	}
 	
+	public Especialidade buscarPorId(Integer id){
+		return EspecialidadeDAO.getInstance().buscarPorId(id);
+	}
 }

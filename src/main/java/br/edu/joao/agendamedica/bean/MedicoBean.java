@@ -11,4 +11,8 @@ public class MedicoBean {
 		return MedicoDAO.getInstance().listarTodos();
 	}
 	
+	public Medico buscarPorId(Integer id){
+		return MedicoDAO.getInstance().buscarPorId(id);
+	}
+	
 }

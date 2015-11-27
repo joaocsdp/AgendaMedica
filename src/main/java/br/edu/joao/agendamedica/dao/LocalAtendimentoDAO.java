@@ -13,12 +13,8 @@ public class LocalAtendimentoDAO extends ConexaoFactory {
 
 	private List<LocalAtendimento> locais;
 
-	PreparedStatement ps = null;
-	ResultSet rs = null;
-
 	public static LocalAtendimentoDAO instance;
 
-	Connection conn = criaConexao();
 
 	public static LocalAtendimentoDAO getInstance() {
 		if (instance == null) {
@@ -40,8 +36,10 @@ public class LocalAtendimentoDAO extends ConexaoFactory {
 			locais = new ArrayList<LocalAtendimento>();
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM TB_LOCAL_ATENDIMENTO ");
-			ps = conn.prepareStatement(sql.toString());
-			rs = ps.executeQuery();
+			
+			Connection conn = criaConexao();
+			PreparedStatement ps = conn.prepareStatement(sql.toString());
+			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
 				LocalAtendimento localAtendimento = new LocalAtendimento();
@@ -51,12 +49,40 @@ public class LocalAtendimentoDAO extends ConexaoFactory {
 				
 				locais.add(localAtendimento);
 			}
+			conn.close();
+			ps.close();
+			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			fechaConexao(conn, ps, rs);
-		}
+		} 
 		return locais;
+	}
+	
+	public LocalAtendimento buscarPorId(Integer id) {
+		LocalAtendimento localAtendimento = new LocalAtendimento();
+		try {
+			
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT * FROM TB_LOCAL_ATENDIMENTO WHERE ID_LOCAL_ATENDIMENTO = ?");
+			Connection conn = criaConexao();
+			PreparedStatement ps = conn.prepareStatement(sql.toString());
+			ps.setInt(1, id);
+			
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.first()) {
+				localAtendimento.setId(rs.getLong("id_local_atendimento"));
+				localAtendimento.setNome(rs.getString("nome"));
+				localAtendimento.setEndereco(rs.getString("endereco"));
+			
+			}
+			conn.close();
+			ps.close();
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return localAtendimento;
 	}
 
 }
